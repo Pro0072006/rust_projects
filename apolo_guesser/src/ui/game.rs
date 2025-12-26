@@ -3,25 +3,21 @@ use std::io::{self, Write};
 use crate::{
     game::{difficulty::Difficulty, player::Player, secret_number::SecretNumber},
     shop::apolo_shop::ApoloShop,
-    util::apolo_util::read_user,
+    util::apolo_util::{lucky_bonus, read_user},
+    util::sleep::sleep_ms,
 };
 
 pub fn start_game() {
     let mut user_input: String;
-    let mut player: Player;
-    let mut secret_number: SecretNumber;
+    let mut player: Player = Player::new();
     let mut apolo_shop = ApoloShop::new();
-
-    println!("Cual es tu nombre??");
-    user_input = read_user();
-    player = Player::new(user_input);
+    let mut secret_number: SecretNumber;
 
     println!(
-        "\n{} ¿Qué dificultad quieres elegir?
-        \n[1] Fácil
-        \n[2] Normal
-        \n[3] Difícil",
-        player.name()
+        "\n¿Qué dificultad quieres elegir?
+        [1] Fácil
+        [2] Normal
+        [3] Difícil",
     );
 
     user_input = read_user();
@@ -36,13 +32,15 @@ pub fn start_game() {
     });
 
     loop {
+        println!("--------------------------");
         if let Some(apolo_hint) = secret_number.hint() {
             println!("{}", apolo_hint);
         }
 
         println!(
             "\nVidas disponibles: {}\
-             \nMonedas disponibles: {}",
+             \nMonedas disponibles: {}\
+             \n\nPresiona 's' para entrar a la tienda",
             player.lifes(),
             player.money()
         );
@@ -51,22 +49,29 @@ pub fn start_game() {
         io::stdout().flush().expect("WTF");
         user_input = read_user();
 
+        if user_input.as_str() == "s" {
+            println!("Vas a entrar a la tienda...");
+            sleep_ms(1000);
+            apolo_shop.enter_shop(&mut player, &mut secret_number);
+            continue;
+        }
+
         if user_input.parse::<u8>().unwrap() == secret_number.value() {
             println!("GANASTE");
             //logica para ganar
             return;
         }
 
+        println!("\nNumero incorrecto, pierdes una vida");
+        sleep_ms(800);
+
+        lucky_bonus(&mut player);
         player.sub_lifes(1);
 
         if player.lifes() < 1 {
             println!("PERDISTE");
             //logica para perder
             return;
-        }
-
-        if player.lifes() == 6 {
-            apolo_shop.enter_shop(&mut player, &mut secret_number);
         }
     }
 }

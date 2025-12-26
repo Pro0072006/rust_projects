@@ -2,22 +2,18 @@ const MAX_LIFES: u8 = 10;
 const MAX_MONEY: u8 = 20;
 
 pub struct Player {
-    name: String,
     lifes: u8,
     money: u8,
+    luck: u8,
 }
 
 impl Player {
-    pub fn new(name: String) -> Self {
+    pub fn new() -> Self {
         Self {
-            name,
             lifes: 10,
             money: 10,
+            luck: 0,
         }
-    }
-
-    pub fn name(&self) -> &str {
-        &self.name
     }
 
     pub fn money(&self) -> u8 {
@@ -26,6 +22,18 @@ impl Player {
 
     pub fn lifes(&self) -> u8 {
         self.lifes
+    }
+
+    pub fn luck(&self) -> u8 {
+        self.lifes
+    }
+
+    pub fn add_lucky(&mut self, amount: u8) {
+        self.luck = self.luck.saturating_add(amount).min(99);
+    }
+
+    pub fn reset_lucky(&mut self) {
+        self.luck = 10;
     }
 
     pub fn add_money(&mut self, amount: u8) {

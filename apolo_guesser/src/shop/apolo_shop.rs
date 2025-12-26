@@ -1,5 +1,6 @@
 use crate::game::{player::Player, secret_number::SecretNumber};
 use crate::util::apolo_util::read_user;
+use crate::util::terminal::clear;
 
 pub struct ApoloShop {
     lifes: u8,
@@ -19,7 +20,8 @@ impl ApoloShop {
             println!(
                 "Que vas a comprar:
                 1. Vidas | precio: 3 | disponible: {}
-                2. Pista | precio: 5 | disponible: {}",
+                2. Pista | precio: 5 | disponible: {}
+                3. Salir de la tienda",
                 self.lifes, self.hints
             );
 
@@ -48,6 +50,10 @@ impl ApoloShop {
                         player.money()
                     )
                 }
+                "3" => {
+                    user_out = true;
+                    continue;
+                }
                 _ => println!("Opcion no valida"),
             }
 
@@ -64,6 +70,7 @@ impl ApoloShop {
                 _ => (),
             }
         }
+        clear();
     }
 
     fn buy_life(&mut self, player: &mut Player) -> bool {

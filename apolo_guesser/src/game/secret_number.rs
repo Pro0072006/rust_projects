@@ -6,7 +6,6 @@ const MAX_VALUE: u8 = 75;
 
 pub struct SecretNumber {
     value: u8,
-    difficulty: Difficulty,
     hint: Option<String>,
 }
 
@@ -20,19 +19,11 @@ impl SecretNumber {
             Difficulty::Hard => rng.gen_range(1..=75),
         };
 
-        Self {
-            value,
-            difficulty,
-            hint: None,
-        }
+        Self { value, hint: None }
     }
 
     pub fn value(&self) -> u8 {
         self.value
-    }
-
-    pub fn difficulty(&self) -> &Difficulty {
-        &self.difficulty
     }
 
     pub fn hint(&self) -> Option<&str> {
